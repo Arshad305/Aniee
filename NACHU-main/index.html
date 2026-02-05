@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
+    <title>LOVE U NACHU</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #ffe6e9;
+            font-family: "Quicksand", sans-serif;
+            overflow: hidden; /* Important: prevents scrollbars when button moves */
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .local-gif, .gif-result {
+            width: 100%;
+            max-width: 280px;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .question {
+            font-size: 2.5rem;
+            color: #444;
+            margin-bottom: 2rem;
+        }
+
+        /* This container keeps buttons side-by-side initially */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            min-height: 60px;
+            position: relative;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            background-color: #ff6b81;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0px 4px 15px rgba(255, 107, 129, 0.4);
+            transition: transform 0.2s, background-color 0.2s;
+            touch-action: none; /* Prevents mobile scrolling when touching No */
+        }
+
+        /* Initial state is relative so they don't overlap */
+        .no-btn {
+            position: relative;
+            z-index: 10;
+        }
+
+        .yes-btn {
+            position: relative;
+            z-index: 5;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Result and Loader hidden by default */
+        .result-container, .cssload-main {
+            display: none;
+        }
+
+        /* Simple Heart Loader */
+        .cssload-heart {
+            width: 50px;
+            height: 50px;
+            background: #ff0000;
+            position: relative;
+            transform: rotate(-45deg);
+            animation: pulse 0.6s infinite alternate;
+            margin: 0 auto;
+        }
+        .cssload-heart::before, .cssload-heart::after {
+            content: '';
+            width: 50px;
+            height: 50px;
+            background: #ff0000;
+            border-radius: 50%;
+            position: absolute;
+        }
+        .cssload-heart::before { top: -25px; left: 0; }
+        .cssload-heart::after { left: 25px; top: 0; }
+
+        @keyframes pulse {
+            to { transform: scale(1.2) rotate(-45deg); }
+        }
+
+        .result-container h2 {
+            font-size: 2.5rem;
+            color: #ff4d6d;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="question-container container">
+        <video class="local-gif" src="Reply me love.mp4" autoplay muted loop playsinline></video>
+        <h2 class="question">Aniee, do you love me?</h2>
+        <div class="button-container">
+            <button class="yes-btn btn">Yes</button>
+            <button class="no-btn btn">No</button>
+        </div>
+    </div>
+
+    <div class="cssload-main">
+        <div class="cssload-heart"></div>
+    </div>
+
+    <div class="result-container container">
+        <video class="gif-result" src="Love me.mp4" autoplay loop playsinline></video>
+        <h2>I knew it 😍!</h2>
+    </div>
+
+    <script>
+        const questionContainer = document.querySelector(".question-container");
+        const resultContainer = document.querySelector(".result-container");
+        const gifResult = document.querySelector(".gif-result");
+        const heartLoader = document.querySelector(".cssload-main");
+        const yesBtn = document.querySelector(".yes-btn");
+        const noBtn = document.querySelector(".no-btn");
+
+        function moveButton() {
+            // Get screen dimensions
+            const padding = 20;
+            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+            // Generate random coordinates
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
+
+            // Switch to fixed positioning so it can move anywhere
+            noBtn.style.position = "fixed";
+            noBtn.style.left = randomX + "px";
+            noBtn.style.top = randomY + "px";
+        }
+
+        // Desktop Hover
+        noBtn.addEventListener("mouseover", moveButton);
+
+        // Mobile Touch
+        noBtn.addEventListener("touchstart", (e) => {
+            e.preventDefault(); // Prevents clicking the button
+            moveButton();
+        });
+
+        // Yes Button click
+        yesBtn.addEventListener("click", () => {
+            questionContainer.style.display = "none";
+            heartLoader.style.display = "block";
+
+            setTimeout(() => {
+                heartLoader.style.display = "none";
+                resultContainer.style.display = "flex";
+                // In some browsers, video needs a manual play trigger after display change
+                if (gifResult) gifResult.play();
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
